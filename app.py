@@ -1,13 +1,21 @@
 import streamlit as st
 import pandas as pd
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment
-from datetime import datetime, timedelta
 import json
 import os
 import io
 import re
 from pathlib import Path
+from datetime import datetime, timedelta
+
+# openpyxlのインポート（エラーハンドリング付き）
+try:
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill, Alignment
+    OPENPYXL_AVAILABLE = True
+except ImportError as e:
+    OPENPYXL_AVAILABLE = False
+    st.error(f"⚠️ openpyxlのインポートに失敗しました: {str(e)}")
+    st.info("requirements.txtに以下を追加してください:\nopenpyxl>=3.1.0\net-xmlfile>=1.1.0")
 
 # ページ設定
 st.set_page_config(
@@ -152,6 +160,10 @@ class InventoryManager:
     @staticmethod
     def import_matrix_excel(uploaded_files):
         """マトリクス形式のExcelファイルをインポート"""
+        if not OPENPYXL_AVAILABLE:
+            st.error("❌ openpyxlがインストールされていないため、Excelインポートは使用できません")
+            return {}, 0
+        
         date_records = {}
         total_loaded = 0
         
@@ -365,6 +377,11 @@ def import_excel_data(uploaded_files):
 
 def export_current_excel():
     """現在の在庫をExcelエクスポート"""
+    if not OPENPYXL_AVAILABLE:
+        st.error("❌ openpyxlがインストールされていないため、Excelエクスポートは使用できません")
+        st.info("代わりにCSVエクスポートをご利用ください")
+        return
+    
     output = io.BytesIO()
     wb = openpyxl.Workbook()
     
@@ -557,6 +574,11 @@ def export_csv(start_date, end_date):
 
 def export_excel(start_date, end_date):
     """Excel形式でエクスポート"""
+    if not OPENPYXL_AVAILABLE:
+        st.error("❌ openpyxlがインストールされていないため、Excelエクスポートは使用できません")
+        st.info("代わりにCSVエクスポートをご利用ください")
+        return
+    
     start_str = start_date.strftime('%Y-%m-%d')
     end_str = end_date.strftime('%Y-%m-%d')
     
