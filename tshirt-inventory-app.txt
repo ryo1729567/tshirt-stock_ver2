@@ -1,0 +1,10 @@
+tshirt-inventory-app/
+├── app.py                          # メインアプリケーション
+├── requirements.txt                # 必要なライブラリ
+├── .gitignore                      # Git除外設定
+├── README.md                       # 詳細ドキュメント
+├── QUICKSTART.md                   # 5分で始めるガイド
+├── .streamlit/
+│   └── config.toml                 # Streamlit設定
+└── data/
+    └── .gitkeep                    # データフォルダ（自動生成）
